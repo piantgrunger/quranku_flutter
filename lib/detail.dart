@@ -2,38 +2,36 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'detailsurat.dart';
 import 'surat.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Detail extends StatefulWidget {
-    final Surat surat;
+  final Surat surat;
 
-    Detail({this.surat}); 
+  Detail({this.surat});
   _DetailState createState() => _DetailState(this.surat);
-
 }
 
 class _DetailState extends State<Detail> {
-   Surat  _surat;
- _DetailState(this._surat);  //constructor
+  Surat _surat;
+  _DetailState(this._surat); //constructor
   List<SuratDetail> _suratdetail = <SuratDetail>[];
-
 
   @override
   void initState() {
     super.initState();
     listenForSurat();
-
-    
   }
+
   listenForSurat() async {
-      var stream = await getSuratDetail(this._surat.noSurat);
-      stream.listen((surat) => setState(() => _suratdetail.add(surat)));
-    }
+    var stream = await getSuratDetail(this._surat.noSurat);
+    stream.listen((surat) => setState(() => _suratdetail.add(surat)));
+  }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text(this._surat.nama +' - '+this._surat.namaArab+' '),
+        title: new Text(this._surat.nama + ' - ' + this._surat.namaArab + ' '),
         backgroundColor: Colors.green,
       ),
       body: new Center(
@@ -44,21 +42,47 @@ class _DetailState extends State<Detail> {
   }
 }
 
-class SuratWidget extends StatelessWidget {
+class SuratWidget extends StatefulWidget {
   final SuratDetail _suratDetail;
 
   SuratWidget(this._suratDetail);
 
   @override
+  _SuratWidgetState createState() => _SuratWidgetState(_suratDetail);
+}
+
+class _SuratWidgetState extends State<SuratWidget> {
+  final SuratDetail _suratDetail;
+
+  _SuratWidgetState(this._suratDetail);
+
+  AudioPlayer _audioPlayer;
+
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayer = new AudioPlayer();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new Card(
-      
         child: new ListTile(
+      trailing: new MaterialButton(
+          child: new Icon(
+            Icons.play_circle_filled,
+            size: 30.0,
+          ),
+          onPressed: () async {
+            await _audioPlayer.play(_suratDetail.recitation);
+          }),
       title: new Text(
-        _suratDetail.ayat.toString() + ' - ' + _suratDetail.ayatArab,
+        widget._suratDetail.ayat.toString() +
+            ' - ' +
+            widget._suratDetail.ayatArab,
         style: new TextStyle(fontSize: 30.0),
       ),
-      subtitle: new Text(_suratDetail.terjemahan),
+      subtitle: new Text(widget._suratDetail.terjemahan),
     ));
   }
 }
