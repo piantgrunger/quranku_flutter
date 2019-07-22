@@ -69,9 +69,10 @@ class _SuratWidgetState extends State<SuratWidget> {
     return new Card(
         child: new ListTile(
       trailing: new MaterialButton(
+                
           child: new Icon(
             Icons.play_circle_filled,
-            size: 30.0,
+            size: 50.0,
           ),
           onPressed: () async {
             await _audioPlayer.play(_suratDetail.recitation);
@@ -80,7 +81,7 @@ class _SuratWidgetState extends State<SuratWidget> {
         widget._suratDetail.ayat.toString() +
             ' - ' +
             widget._suratDetail.ayatArab,
-        style: new TextStyle(fontSize: 30.0),
+        style: new TextStyle(fontSize: 28.0),
       ),
       subtitle: new Text(widget._suratDetail.terjemahan),
     ));
