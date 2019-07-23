@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'detail.dart';
-import 'surat.dart';
+import 'data/surat.dart';
+import 'search.dart';
+import 'data/detailsurat.dart';
 
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
-  
 }
 
 class _HomeState extends State<Home> {
@@ -29,12 +30,25 @@ class _HomeState extends State<Home> {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("Quranku"),
-        backgroundColor: Colors.green,
+        
+        actions: <Widget>[
+          new IconButton(
+            icon: new Icon(
+              Icons.search,
+              size: 30.0,
+
+            ),
+            onPressed: (){
+              showSearch(context:context,delegate: SuratSearch());
+               
+            },
+            
+          )
+        ],
       ),
       body: new Center(
           child: new ListView(
         children: _surat.map((surat) => new SuratWidget(surat)).toList(),
-        
       )),
     );
   }
@@ -62,21 +76,70 @@ class SuratWidget extends StatelessWidget {
           new Text(_surat.arti),
         ],
       ),
-      onTap: ()   {
+      onTap: () {
         /*
         if (await canLaunch(
             'https://quranku.alfiannaufal.com/index.php?r=site%2Fsurah&noSurah=${_surat.noSurat.toString()}')) {
           launch(
               'https://quranku.alfiannaufal.com/index.php?r=site%2Fsurah&noSurah=${_surat.noSurat.toString()}');
              */
-                  Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Detail(surat: _surat,),
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Detail(
+                  surat: _surat,
                 ),
-              );
-        
+          ),
+        );
       },
     ));
   }
+}
+
+class SuratSearch extends SearchDelegate<SuratDetail>{
+
+
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    // TODO: implement buildActions
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: (){
+          query='';
+
+        },
+      )
+
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    // TODO: implement buildLeading
+
+    return 
+      IconButton(
+        icon: Icon(Icons.arrow_back_ios),
+        onPressed: (){
+          close(context,null);
+        },
+      );
+
+    
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    // TODO: implement buildResults
+    return new Search(query: query.toString(),);
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    // TODO: implement buildSuggestions
+    return Container();
+  } 
+  
 }

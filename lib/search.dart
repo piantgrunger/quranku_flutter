@@ -1,19 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'data/detailsurat.dart';
-import 'data/surat.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-class Detail extends StatefulWidget {
-  final Surat surat;
+class Search extends StatefulWidget {
+  final String query;
 
-  Detail({this.surat});
-  _DetailState createState() => _DetailState(this.surat);
+  Search({this.query});
+  _SearchState createState() => _SearchState(this.query);
 }
 
-class _DetailState extends State<Detail> {
-  Surat _surat;
-  _DetailState(this._surat); //constructor
+class _SearchState extends State<Search> {
+  String query;
+  _SearchState(this.query); //constructor
   List<SuratDetail> _suratdetail = <SuratDetail>[];
 
   @override
@@ -23,18 +22,15 @@ class _DetailState extends State<Detail> {
   }
 
   listenForSurat() async {
-    var stream = await getSuratDetail(this._surat.noSurat);
+    var stream = await getCariAyat(this.query);
     stream.listen((surat) => setState(() => _suratdetail.add(surat)));
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(this._surat.nama + ' - ' + this._surat.namaArab + ' '),
-
-      ),
-      body: new Center(
+    return new Container(
+      
+      child: new Center(
           child: new ListView(
         children: _suratdetail.map((surat) => new SuratWidget(surat)).toList(),
       )),
@@ -69,7 +65,6 @@ class _SuratWidgetState extends State<SuratWidget> {
     return new Card(
         child: new ListTile(
       trailing: new MaterialButton(
-                
           child: new Icon(
             Icons.play_circle_filled,
             size: 50.0,
