@@ -19,7 +19,7 @@ class SuratDetail {
 
 Future<Stream<SuratDetail>>getSuratDetail(int urut) async {
   
-   var url = 'https://alfiannaufal.com/QuranAPI/public_html/index.bin/$urut/surat';
+   var url = 'http://quranku.alfiannaufal.com/index.bin/$urut/surat';
    /*
    http.get(url).then(
      (res) => print(res.body)
@@ -30,13 +30,14 @@ Future<Stream<SuratDetail>>getSuratDetail(int urut) async {
   return streamedRes.stream
   .transform(utf8.decoder)
   .transform(json.decoder)
+  
   .expand((jsonBody) =>(jsonBody as Map)['content'])
   .map((jsonSurat) => new SuratDetail.fromJson(jsonSurat));
 }
 
 Future<Stream<SuratDetail>>getCariAyat(String cari) async {
   
-   var url = 'https://alfiannaufal.com/QuranAPI/public_html/index.bin/$cari/cari';
+   var url = 'http://quranku.alfiannaufal.com/index.bin/$cari/cari';
    /*
    http.get(url).then(
      (res) => print(res.body)

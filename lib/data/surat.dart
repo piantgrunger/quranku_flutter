@@ -22,7 +22,7 @@ class Surat {
 
 Future<Stream<Surat>>getSurat() async {
   
-   var url = 'https://alfiannaufal.com/QuranAPI/public_html/index.bin/daftarsurat';
+   var url = 'http://quranku.alfiannaufal.com/index.bin/daftarsurat';
    /*
    http.get(url).then(
      (res) => print(res.body)

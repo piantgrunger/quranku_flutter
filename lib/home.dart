@@ -20,40 +20,56 @@ class _HomeState extends State<Home> {
     listenForSurat();
   }
 
-  listenForSurat() async {
+  Future listenForSurat() async {
     var stream = await getSurat();
-    stream.listen((surat) => setState(() => _surat.add(surat)));
+     stream.listen((surat) => setState(() => _surat.add(surat)));
+     return _surat;
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("Quranku"),
-        
-        actions: <Widget>[
-          new IconButton(
-            icon: new Icon(
-              Icons.search,
-              size: 30.0,
+        appBar: new AppBar(
+          title: new Text("Quranku"),
+          actions: <Widget>[
+            new IconButton(
+              icon: new Icon(
+                Icons.search,
+                size: 30.0,
+              ),
+              onPressed: () {
+                showSearch(context: context, delegate: SuratSearch());
+              },
+            )
+          ],
+        ),
+        body: FutureBuilder(
+            future: listenForSurat(),
+            builder: (context, snapshot) {
+              if(snapshot.data == null) {
+                 return Center(
+                  child: new Text("Loading"
+                  )
+                  );
 
-            ),
-            onPressed: (){
-              showSearch(context:context,delegate: SuratSearch());
-               
-            },
-            
-          )
-        ],
-      ),
-      body: new Center(
-          child: new ListView(
-        children: _surat.map((surat) => new SuratWidget(surat)).toList(),
-      )),
-    );
+
+
+              } else {
+              
+              return Center(
+                  child: new ListView(
+                children:_surat.map((surat) => new SuratWidget(surat)).toList(),
+                  )
+              );
+              }
+            }  
+              
+       ),
+       
+       );
+
+            }
   }
-}
-
 
 
 class SuratWidget extends StatelessWidget {
@@ -65,15 +81,18 @@ class SuratWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Card(
         child: new ListTile(
-      title: new Text(
-        _surat.nama + ' - ' + _surat.namaArab,
-        style: new TextStyle(fontSize: 30.0),
-      ),
-      subtitle: new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      title: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          new Text(_surat.jumlahAyat.toString() + ' ayat'),
+          new Text(_surat.nama,   style: new TextStyle(fontSize: 28.0)),
+          new Text(_surat.namaArab,   style: new TextStyle(fontSize: 28.0)),
+        ],
+      ),    subtitle: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
           new Text(_surat.arti),
+          new Text(_surat.jumlahAyat.toString() + ' ayat'),
+        
         ],
       ),
       onTap: () {
@@ -96,22 +115,17 @@ class SuratWidget extends StatelessWidget {
   }
 }
 
-class SuratSearch extends SearchDelegate<SuratDetail>{
-
-
-
+class SuratSearch extends SearchDelegate<SuratDetail> {
   @override
   List<Widget> buildActions(BuildContext context) {
     // TODO: implement buildActions
     return [
       IconButton(
         icon: Icon(Icons.clear),
-        onPressed: (){
-          query='';
-
+        onPressed: () {
+          query = '';
         },
       )
-
     ];
   }
 
@@ -119,27 +133,25 @@ class SuratSearch extends SearchDelegate<SuratDetail>{
   Widget buildLeading(BuildContext context) {
     // TODO: implement buildLeading
 
-    return 
-      IconButton(
-        icon: Icon(Icons.arrow_back_ios),
-        onPressed: (){
-          close(context,null);
-        },
-      );
-
-    
+    return IconButton(
+      icon: Icon(Icons.arrow_back_ios),
+      onPressed: () {
+        close(context, null);
+      },
+    );
   }
 
   @override
   Widget buildResults(BuildContext context) {
     // TODO: implement buildResults
-    return new Search(query: query.toString(),);
+    return new Search(
+      query: query.toString(),
+    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     // TODO: implement buildSuggestions
     return Container();
-  } 
-  
+  }
 }
